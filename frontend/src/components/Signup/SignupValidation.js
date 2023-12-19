@@ -3,7 +3,7 @@ function validation(values) {
     const email_pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     const password_pattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9]{8,}$/ //Minimum 8 characters including 1 uppercase letter
     const username_pattern = /[A-Za-z][A-Za-z0-9_]{7,29}$/ //Start with an alphabet, rest can be any characters and string length 8-30
-    const fullname_pattern = /^[a-zA-Z]+ [a-zA-Z]+$/ //first name+ last name
+    const Fullname_pattern = /^[a-zA-Z]+ [a-zA-Z]+$/ //first name+ last name
 
     if(values.username === "") {
         error.username = "Username should not be empty"
@@ -14,10 +14,10 @@ function validation(values) {
         error.username = ""
     }
     
-    if(values.fullname === "") {
-        error.username = "Username should not be empty"
+    if(values.Fullname === "") {
+        error.Fullname = "Fullname should not be empty"
     }
-    else if(!fullname_pattern.test(values.fullname)) {
+    else if(!Fullname_pattern.test(values.Fullname)) {
         error.fullname = "Incorrect format"
     }else {
         error.fullname = ""

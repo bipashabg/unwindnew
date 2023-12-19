@@ -1,28 +1,46 @@
 import React, { useState } from 'react';
 import { Container, Form, Button, Row, Col } from 'react-bootstrap';
 import '../../styles/Signup.css'; // Import the CSS file for styling
-import {Link} from 'react-router-dom';
-import validation from '../../SignupValidation';
+import { Link } from 'react-router-dom';
+import validation from './SignupValidation';
+import axios from 'axios';
 
-function Signup(){
-    const [values, setValues] = useState({
-      username: '',
-      fullname: '',
-      email: '',
-      password: ''
-    })
-    const { username, fullname, email, password } = values;
-    const [errors, setErrors] = useState({})
-    const handleInput = (event) =>{
-      setValues(prev => ({...prev, [event.target.name]: [event.target.value]}))
+function Signup() {
+  const [values, setValues] = useState({
+    username: '',
+    Fullname: '',
+    email: '',
+    password: ''
+  });
+
+  const { username, Fullname, email, password } = values;
+  const [errors, setErrors] = useState({});
+
+  const handleInput = (event) => {
+    setValues((prev) => ({ ...prev, [event.target.name]: event.target.value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrors(validation(values));
+
+    try {
+      const response = await axios.post('http://localhost:3306/api/Signup', {
+        username,
+        Fullname,
+        email,
+        password
+      });
+
+      // Assuming your server sends a JSON response with a message property
+      console.log('Server Response:', response.data.message);
+
+      // Add your own logic to handle the response (e.g., show a success message)
+    } catch (error) {
+      // Handle errors (e.g., show an error message)
+      console.error('Error:', error.message);
     }
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setErrors(validation(values));
-        
-        // Add your signup logic here
-      };
+  };
 
   return (
     <div className="signup-page">
@@ -37,10 +55,10 @@ function Signup(){
                   type="text"
                   placeholder="Set username"
                   value={username}
-                  onChange={handleInput} 
+                  onChange={handleInput}
                   className='form-control rounded-0'
                   required
-                  name= 'username'
+                  name='username'
                 />
                 {errors.username && <span className='text-danger'>{errors.username}</span>}
               </Form.Group>
@@ -50,13 +68,13 @@ function Signup(){
                 <Form.Control
                   type="text"
                   placeholder="Enter full name"
-                  value={fullname}
-                  onChange={handleInput} 
+                  value={Fullname}
+                  onChange={handleInput}
                   className='form-control rounded-0'
                   required
-                  name='fullname'
+                  name='Fullname'
                 />
-                {errors.fullname && <span className='text-danger'>{errors.fullname}</span>}
+                {errors.Fullname && <span className='text-danger'>{errors.Fullname}</span>}
               </Form.Group>
 
               <Form.Group controlId="formBasicEmail">
@@ -65,7 +83,7 @@ function Signup(){
                   type="email"
                   placeholder="Enter email"
                   value={email}
-                  onChange={handleInput} 
+                  onChange={handleInput}
                   className='form-control rounded-0'
                   required
                   name='email'
@@ -79,7 +97,7 @@ function Signup(){
                   type="password"
                   placeholder="Set Password(8+ characters)"
                   value={password}
-                  onChange={handleInput} 
+                  onChange={handleInput}
                   className='form-control rounded-0'
                   required
                   name='password'
@@ -88,7 +106,6 @@ function Signup(){
               </Form.Group>
 
               <Button variant="primary" style={{ backgroundColor: '#7071E8' }} type="submit" block className="mt-3">
-                {/* Add margin-top to create space */}
                 Sign Up
               </Button>
             </Form>
@@ -102,6 +119,6 @@ function Signup(){
       </Container>
     </div>
   );
-};
+}
 
 export default Signup;
