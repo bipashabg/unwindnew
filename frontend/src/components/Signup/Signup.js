@@ -16,31 +16,14 @@ function Signup() {
   const { username, Fullname, email, password } = values;
   const [errors, setErrors] = useState({});
 
-  const handleInput = (event) => {
-    setValues((prev) => ({ ...prev, [event.target.name]: event.target.value }));
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors(validation(values));
-
-    try {
-      const response = await axios.post('http://localhost:3306/api/Signup', {
-        username,
-        Fullname,
-        email,
-        password
-      });
-
-      // Assuming your server sends a JSON response with a message property
-      console.log('Server Response:', response.data.message);
-
-      // Add your own logic to handle the response (e.g., show a success message)
-    } catch (error) {
-      // Handle errors (e.g., show an error message)
-      console.error('Error:', error.message);
-    }
-  };
+    axios.post('http://localhost:3000/signup', values)
+      .then(res => console.log(res))
+      .then(err => console.log(err));
+  }
 
   return (
     <div className="signup-page">
@@ -55,7 +38,7 @@ function Signup() {
                   type="text"
                   placeholder="Set username"
                   value={username}
-                  onChange={handleInput}
+                  onChange={e => setValues({...values, username: e.target.value})}
                   className='form-control rounded-0'
                   required
                   name='username'
@@ -69,7 +52,7 @@ function Signup() {
                   type="text"
                   placeholder="Enter full name"
                   value={Fullname}
-                  onChange={handleInput}
+                  onChange={e => setValues({...values, Fullname: e.target.value})}
                   className='form-control rounded-0'
                   required
                   name='Fullname'
@@ -83,7 +66,7 @@ function Signup() {
                   type="email"
                   placeholder="Enter email"
                   value={email}
-                  onChange={handleInput}
+                  onChange={e => setValues({...values, email: e.target.value})}
                   className='form-control rounded-0'
                   required
                   name='email'
@@ -97,7 +80,7 @@ function Signup() {
                   type="password"
                   placeholder="Set Password(8+ characters)"
                   value={password}
-                  onChange={handleInput}
+                  onChange={e => setValues({...values, password: e.target.value})}
                   className='form-control rounded-0'
                   required
                   name='password'

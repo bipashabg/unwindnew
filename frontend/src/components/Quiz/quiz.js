@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import 'chart.js/auto';
 import { Doughnut } from 'react-chartjs-2';
 import Question from './Question';
-import './quiz.css';
+import '../../styles/quiz.css';
 
 const Quiz = () => {
     const [responses, setResponses] = useState({ depression: [], anxiety: [], stress: [] });

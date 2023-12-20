@@ -1,13 +1,18 @@
 const express = require('express');
-const mysql = require('mysql2');
+const mysql = require('mysql');
+const cors = require('cors');
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-require('dotenv').config();
-const path = require('path');
-const cors = require('cors');  // Import cors
+const salt=10;
+
 
 const app = express();
-const port = 3000; // Change the port to a different one, e.g., 3000
+app.use(express.json());
+app.use(cors());
+app.use(cookieParser());
+const port = 3001; // Change the port to a different one
 
 app.use(cors());  // Enable CORS
 
@@ -31,47 +36,23 @@ db.connect((err) => {
 });
 
 // Signup endpoint
-app.post('/api/Signup', async (req, res) => {
-  try {
-    const { username, Fullname, email, password } = req.body;
-
-    // Validate the data
-    if (!isValidEmail(email) || !isValidPassword(password) || !isValidUsername(username) || !isValidName(Fullname)) {
-      return res.status(400).send('Invalid data format');
-    }
-
-    // Check if the username or email is already taken
-    const userExists = await userExists(username, email);
-    if (userExists) {
-      return res.status(409).send('Username or email is already taken');
-    }
-
-    // Hash and salt the password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Store the user data in the database
-    db.query(
-      'INSERT INTO users (username, Fullname, email, password) VALUES (?, ?, ?, ?)',
-      [username, Fullname, email, hashedPassword],
-      (err, result) => {
-        if (err) {
-          console.error('Error creating user:', err);
-          res.status(500).send('Internal Server Error');
-        } else {
-          res.status(201).send('User created successfully');
-          alert('User successfully created');
-        }
-      }
-    );
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).send('Internal Server Error');
-  }
-});
-
-app.get('/signup', (req, res) => {
-  res.sendFile(path.join(__dirname, 'C:\Users\User\..\frontend\src\components\Signup\Signup.js')); // Update the path accordingly
-});
+app.post('/Signup', (req, res) => {
+  const sql = "INSERT INTO users('username', 'Fullname', 'email', 'password') VALUES (?)";
+  bcrypt.hash(req.body.password.toString(), salt, (err, hash) => {
+    if(err) return res.json({Error: "Error for hashing password"});
+    const values = [
+      req.body.username,
+      req.body.Fullname,
+      req.body.email,
+      hash
+    ]
+    db.query(sql, [values], (err, result) => {
+      if(err) return res.json({Error: "Inserting data Errorr in server"});
+      return res.json({Status: "Values entered successfully"});
+    })
+  })
+  res.send('Signup successful');
+})
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

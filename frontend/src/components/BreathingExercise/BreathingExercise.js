@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './breathingexercise.css'; // Import your CSS file for styling
+import '../../styles/breathingexercise.css'; // Import your CSS file for styling
 
 const themes = [
   { name: 'Light', backgroundColor: '#f0f0f0', textColor: '#333', circleColor: '#3498db' },
