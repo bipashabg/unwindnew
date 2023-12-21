@@ -68,7 +68,7 @@ const Quiz = () => {
         const totalScores = Object.keys(responses).map((label) =>
           Object.values(responses[label]).reduce((sum, value) => sum + value, 0)
         );
-    
+      
         const data = {
           labels: Object.keys(responses),
           datasets: [

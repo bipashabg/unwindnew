@@ -3,7 +3,7 @@ import Login from './components/Login/Login'
 import ForgotPassword from './components/forgotPassword/forgotPassword'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './components/Home/Home'
-//import Quiz from './components/Quiz/quiz'
+import Quiz from './components/Quiz/quiz'
 import Signup from './components/Signup/Signup'
 import Gamepage from './components/games/gamepage'
 import Breathe from './components/BreathingExercise/BreathingExercise'
@@ -18,6 +18,7 @@ function App() {
         <Route path='/Signup' element={<Signup />}></Route>
         <Route path='/Gamepage' element={<Gamepage />}></Route>
         <Route path='/Breathe' element={<Breathe />}></Route>
+        <Route path= '/Quiz' element={<Quiz />}></Route>
         <Route path="/" element={<Home />} />
       </Routes>
     </BrowserRouter>

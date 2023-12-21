@@ -34,6 +34,7 @@ db.connect((err) => {
 
 // Signup endpoint
 app.post('/signup', (req, res) => {
+  
   const sql = "INSERT INTO users (username, Fullname, email, hashedPassword) VALUES (?)";
   bcrypt.hash(req.body.password.toString(), salt, (err, hash) => {
     if (err) return res.json({ Error: "Error for hashing password" });
@@ -55,6 +56,36 @@ app.post('/signup', (req, res) => {
     });
   });
 });
+
+//Login endpoint
+
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+  console.log('Received a login request');
+  const sql = 'SELECT * FROM users WHERE email = ?';
+  db.query(sql, [email], (err, data) => {
+    if (err) {
+      console.error('Login error in server:', err);
+      return res.status(500).json({ Error: "Login error in server" });
+    }
+
+    if (data.length > 0) {
+      bcrypt.compare(password.toString(), data[0].hashedPassword, (err, response) => {
+        if (err) {
+          console.error('Password compare error:', err);
+          return res.status(500).json({ Error: "Password compare error" });
+        }
+        if(response) {
+          return res.json({Status: "Success"});
+        } else {
+          return res.json({Error: "Password not matched"});
+        }
+      })
+    } else {
+        return res.json({Error: "Email doesn't exist"});
+    }
+  })
+})
 
 app.listen(3001, () => {
   console.log(`Server is running on port ${3001}`);

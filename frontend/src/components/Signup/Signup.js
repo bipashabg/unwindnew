@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Container, Form, Button, Row, Col } from 'react-bootstrap';
 import '../../styles/Signup.css'; // Import the CSS file for styling
-import { Link } from 'react-router-dom';
+import { Link, useNavigate} from 'react-router-dom';
 import validation from './SignupValidation';
 import axios from 'axios';
 
@@ -17,20 +17,19 @@ function Signup() {
 
   const { username, Fullname, email, password } = values;
   const [errors, setErrors] = useState({});
-
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors(validation(values));
-    fetch('http://localhost:3001/signup', {
-        method: 'POST',
-        headers: {
-        'Content-Type': 'application/json',
-        },
-      body: JSON.stringify(values),
-    })
-      .then(res => console.log(res))
-      .then(err => console.log(err));
+
+    try {
+      await axios.post('http://localhost:3001/signup', values);
+      navigate('/Login'); // Navigate to login page immediately after successful signup
+    } catch (error) {
+      console.error("An error occurred:", error);
+      alert("An error occurred. Please try again.");
+    }
   }
 
   return (

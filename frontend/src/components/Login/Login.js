@@ -1,29 +1,33 @@
 import React, { useState } from 'react';
 import { Container, Form, Button, Row, Col } from 'react-bootstrap';
 import '../../styles/Login.css'; // Import the CSS file for styling
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import validation from './LoginValidation';
 import { signInWithGoogle } from '../../Firebase';
+import axios from 'axios';
 
 function Login(){
   const [values, setValues] = useState({
     email: '',
     password: ''
-  })
-  const { email, password } = values;
-  const [errors, setErrors] = useState({})
-  const handleInput = (event) =>{
-    setValues(prev => ({...prev, [event.target.name]: [event.target.value]}))
-  }
-
+  });
   const [rememberMe, setRememberMe] = useState(false);
+  const {email, password } = values;
+  const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors(validation(values));
-    
-    // Add your authentication logic here
-  };
+
+    try {
+      await axios.post('http://localhost:3001/login', values);
+      navigate('/'); // Navigate to home page
+    } catch (error) {
+      console.error("An error occurred:", error);
+      alert("An error occurred. Please try again.");
+    }
+  }
 
   return (
     <div className="login-page">
@@ -40,7 +44,7 @@ function Login(){
                   placeholder="Enter email"
                   name='email'
                   value={email}
-                  onChange={handleInput} 
+                  onChange={e => setValues({...values, email: e.target.value})} 
                   className='form-control rounded-0'
                   required
                 />
@@ -55,7 +59,7 @@ function Login(){
                   placeholder="Password"
                   name='password'
                   value={password}
-                  onChange={handleInput}
+                  onChange={e => setValues({...values, password: e.target.value})}
                   className='form-control rounded-0'
                   required
                 />
