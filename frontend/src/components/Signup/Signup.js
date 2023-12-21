@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import validation from './SignupValidation';
 import axios from 'axios';
 
+
+
 function Signup() {
   const [values, setValues] = useState({
     username: '',
@@ -20,7 +22,13 @@ function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors(validation(values));
-    axios.post('http://localhost:3000/signup', values)
+    fetch('http://localhost:3001/signup', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        },
+      body: JSON.stringify(values),
+    })
       .then(res => console.log(res))
       .then(err => console.log(err));
   }
@@ -88,9 +96,10 @@ function Signup() {
                 {errors.password && <span className='text-danger'>{errors.password}</span>}
               </Form.Group>
 
-              <Button variant="primary" style={{ backgroundColor: '#7071E8' }} type="submit" block className="mt-3">
-                Sign Up
+              <Button variant="primary" style={{ backgroundColor: '#7071E8' }} type="submit" className="mt-3">
+                  Sign Up
               </Button>
+
             </Form>
 
             <div className="mt-3 text-center">

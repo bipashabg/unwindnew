@@ -5,17 +5,14 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const salt=10;
-
+const salt = 10;
 
 const app = express();
+const port = 3001;
+
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
-const port = 3001; // Change the port to a different one
-
-app.use(cors());  // Enable CORS
-
 app.use(bodyParser.json());
 
 const db = mysql.createConnection({
@@ -24,7 +21,7 @@ const db = mysql.createConnection({
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || 'Cindley23',
   database: process.env.DB_NAME || 'unwind',
-  connectTimeout: 20000, // 20 seconds (adjust as needed)
+  connectTimeout: 20000,
 });
 
 db.connect((err) => {
@@ -36,30 +33,29 @@ db.connect((err) => {
 });
 
 // Signup endpoint
-app.post('/Signup', (req, res) => {
-  const sql = "INSERT INTO users('username', 'Fullname', 'email', 'password') VALUES (?)";
+app.post('/signup', (req, res) => {
+  const sql = "INSERT INTO users (username, Fullname, email, hashedPassword) VALUES (?)";
   bcrypt.hash(req.body.password.toString(), salt, (err, hash) => {
-    if(err) return res.json({Error: "Error for hashing password"});
+    if (err) return res.json({ Error: "Error for hashing password" });
+
     const values = [
       req.body.username,
       req.body.Fullname,
       req.body.email,
       hash
-    ]
-    db.query(sql, [values], (err, result) => {
-      if(err) return res.json({Error: "Inserting data Errorr in server"});
-      return res.json({Status: "Values entered successfully"});
-    })
-  })
-  res.send('Signup successful');
-})
+    ];
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+    db.query(sql, [values], (err, result) => {
+      if (err) {
+        console.error('Error inserting data:', err);
+        return res.json({ Error: "Inserting data error in server" });
+      }
+      console.log('Data inserted successfully');
+      return res.json({ Status: "Values entered successfully" });
+    });
+  });
 });
 
-// Add your validation functions here (isValidEmail, isValidPassword, isValidUsername, isValidName)
-// ...
-
-// Add your checkUserExists function here
-// ...
+app.listen(3001, () => {
+  console.log(`Server is running on port ${3001}`);
+});
