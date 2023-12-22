@@ -15,6 +15,7 @@ function Login(){
   const {email, password } = values;
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  axios.defaults.withCredentials = true;
 
   const handleSubmit = async (e) => {
     e.preventDefault();

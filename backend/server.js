@@ -11,7 +11,11 @@ const app = express();
 const port = 3001;
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: ["http://localhost:3000"],
+  methods: ["POST", "GET"],
+  credentials: true
+}));
 app.use(cookieParser());
 app.use(bodyParser.json());
 
@@ -56,6 +60,30 @@ app.post('/signup', (req, res) => {
     });
   });
 });
+//middleware
+const verifyUser = (req, res, next) => {
+  const token = req.cookies.token;
+  console.log('Received token:', token);
+
+  if (!token) {
+    return res.json({ Error: "You are not authenticated" });
+  } else {
+    jwt.verify(token, "jwt-secret-key", (err, decoded) => {
+      if (err) {
+        console.error('Token verification error:', err);
+        return res.json({ Error: "Token is not valid" });
+      } else {
+        console.log('Token decoded successfully:', decoded);
+        req.Fullname = decoded.Fullname;
+        next();
+      }
+    });
+  }
+};
+
+app.get('/', verifyUser, (req, res) => {
+  return res.json({Status: "Success", Fullname: req.Fullname});
+})
 
 //Login endpoint
 
@@ -76,6 +104,9 @@ app.post('/login', (req, res) => {
           return res.status(500).json({ Error: "Password compare error" });
         }
         if(response) {
+          const Fullname = data[0].Fullname;
+          const token = jwt.sign({Fullname}, "jwt-secret-key", {expiresIn: '1d'});
+          res.cookie('token', token);
           return res.json({Status: "Success"});
         } else {
           return res.json({Error: "Password not matched"});
@@ -85,6 +116,11 @@ app.post('/login', (req, res) => {
         return res.json({Error: "Email doesn't exist"});
     }
   })
+})
+
+app.get('/', (req, res) => {
+  res.clearCookie('token');
+  return res.json({Status: "Success"});
 })
 
 app.listen(3001, () => {

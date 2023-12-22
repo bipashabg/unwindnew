@@ -7,6 +7,7 @@ import Quiz from './components/Quiz/quiz'
 import Signup from './components/Signup/Signup'
 import Gamepage from './components/games/gamepage'
 import Breathe from './components/BreathingExercise/BreathingExercise'
+import Userprofile from './components/userprofile/userprofile'
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path='/Gamepage' element={<Gamepage />}></Route>
         <Route path='/Breathe' element={<Breathe />}></Route>
         <Route path= '/Quiz' element={<Quiz />}></Route>
+        <Route path= '/Userprofile' element={<Userprofile />}></Route>
         <Route path="/" element={<Home />} />
       </Routes>
     </BrowserRouter>

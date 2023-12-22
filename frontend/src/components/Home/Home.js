@@ -1,88 +1,67 @@
 import React, { useState, useEffect } from 'react';
-import { Sidebar, Menu, MenuItem } from 'react-pro-sidebar';
-import { Button } from 'react-bootstrap';
-import { Home as HomeIcon, Workspaces, Quiz, SelfImprovement, ThumbUpAlt, SportsEsports, LocalLibrary, Settings, AddComment } from '@mui/icons-material';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { Home as HomeIcon } from '@mui/icons-material';
 import '../../styles/Home.css';
 
-const Home = () => {
-  const [theme, setTheme] = useState('light');
-  const [position, setPosition] = useState('collapsed');
-  const [userData, setUserData] = useState({ email: 'bipashagayary@gmail.com', fullname: 'Bipasha Gayary' });
+function Home() {
+  const [auth, setAuth] = useState(false);
+  const [message, setMessage] = useState('');
+  const [Fullname, setFullname] = useState('');
+  const navigate = useNavigate();
+  axios.defaults.withCredentials = true;
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        // Simulate fetching user data from a backend after login
-        // Replace the URL with your actual backend endpoint for fetching user data
-        const response = await fetch('https://your-backend-api/user-data', {
-          method: 'GET',
-          headers: {
-            'Authorization': 'Bearer YOUR_AUTH_TOKEN',
-          },
-        });
-
-        const data = await response.json();
-        setUserData(data);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
-
-    fetchUserData();
+    axios.get('http://localhost:3001')
+      .then(res => {
+        if (res.status === 200) {
+          if (res.data.Status === "Success") {
+            setAuth(true);
+            setFullname(res.data.Fullname);
+          } else {
+            setAuth(false);
+            setMessage(res.data.Error);
+          }
+        } else {
+          // Handle other status codes, not just 404
+          setAuth(false);
+          setMessage('An error occurred. Please try again.');
+        }
+      })
+      .catch(err => {
+        // Handle network errors or other issues
+        console.log(err);
+        setAuth(false);
+        setMessage('An error occurred. Please try again.');
+      });
   }, []);
 
-  const toggleSidebar = () => {
-    setPosition(position === 'collapsed' ? 'left' : 'collapsed');
-  };
-
-  const handleLogout = () => {
-    // Implement your logout logic here
-    // For example, clear user data, remove tokens, etc.
-    // Redirect to the login page
-    // Use the Link component from react-router-dom for navigation
-    // <Link to="/Login">Login</Link> is not the correct way to navigate
+  const handleDelete = () => {
+    axios.get('http://localhost:3001')
+      .then(res => {
+        window.location.reload(true);
+      })
+      .catch(err => console.log(err));
   };
 
   return (
-    <div className="home-container">
-      <Sidebar theme={theme} position={position}>
-        <div className="app-header">
-          <h2>Unwind</h2>
-        </div>
-
-        {userData && (
-          <div className="user-data">
-            <p>{userData.fullname}</p>
-            <p>{userData.email}</p>
+    <div className='container mt-4'>
+      {
+        auth ?
+          <div>
+            <h3>You are Authorized --- {Fullname}</h3>
+            
+            <button className='btn btn-danger' onClick={handleDelete}>Logout</button>
           </div>
-        )}
-
-        <div className='Menu'>
-          <Menu>
-            <MenuItem icon={<HomeIcon />}>Home</MenuItem>
-            <MenuItem icon={<Workspaces />}>Virtual Retreat</MenuItem>
-            <MenuItem icon={<Quiz />}>Mental Health Quiz</MenuItem>
-            <MenuItem icon={<SelfImprovement />}>Breathe</MenuItem>
-            <MenuItem icon={<ThumbUpAlt />}>Daily Affirmation</MenuItem>
-            <MenuItem icon={<SportsEsports />}>Games</MenuItem>
-            <MenuItem icon={<LocalLibrary />}>Community</MenuItem>
-            <div style={{ height: '20px' }}></div>
-            <MenuItem icon={<Settings />}>Settings</MenuItem>
-            <MenuItem icon={<AddComment />}>Feedback</MenuItem>
-          </Menu>
-        </div>
-        <div style={{ height: '50px' }}></div>
-        <Button variant="primary" style={{ backgroundColor: '#7071E8' }} type="submit" block className="mt-3" onClick={handleLogout}>
-          Logout
-        </Button>
-      </Sidebar>
-
-      <div className="main-content">
-        <h1>Welcome to Unwind</h1>
-        <p>This is the main content.</p>
-      </div>
+          :
+          <div>
+            <h3>{message}</h3>
+            <h3>Login Now</h3>
+            <Link to="/Login" className='btn btn-primary'>Login</Link>
+          </div>
+      }
     </div>
   );
-};
+}
 
 export default Home;
