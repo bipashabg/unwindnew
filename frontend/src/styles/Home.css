@@ -1,23 +1,62 @@
-/* styles.css */
+/* Add this CSS to make the sidebar transparent */
 
-/* ... (your existing styles) */
+.Menu .pro-menu-wrapper {
+  border-radius: 10px; /* Adjust the value as needed */
+  overflow: hidden;
+}
 
-/* Flex container to position sidebar and main content side by side */
-.home-container {
-    display: flex;
-  }
-  
-  /* Set width for the sidebar */
-  .pro-sidebar {
-    width: 250px; /* Adjust the width to your desired size */
-  }
-  
-  /* Adjust spacing between sidebar and main content */
-  .main-content {
-    flex: 1; /* Takes remaining space */
-    padding: 20px; /* Adjust spacing as needed */
-    box-sizing: border-box;
-  }
-  
-  /* ... (your existing styles) */
-  
+/* Add this CSS to make the video cover the whole page */
+.home-page {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Add this CSS to style the video player */
+/*.react-player {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}*/
+
+/* Add this CSS to style the content overlay */
+.content-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: left;
+}
+
+/* Add this CSS to style the h3 element */
+.content-overlay h3 {
+  color: #ECF4D6;
+  align-items: center;
+}
+
+/* Add this CSS to style the logout button */
+/* Add this CSS to style the logout button */
+.content-overlay button {
+  margin-top: 10px; /* Adjust the margin as needed */
+  width: 100px; /* Adjust the width as needed */
+}
+
+/* Add this CSS to style the login button */
+.btn-primary {
+  width: 80px; /* Set the width to auto or adjust as needed */
+  margin-right: 10px; /* Add margin for spacing */
+  border-radius: 5px; /* Add border-radius for rounded corners */
+}
+
+/* Additional styling for the login link */
+.btn-primary:hover {
+  background-color: #3f51b5; /* Change the background color on hover */
+  color: #fff; /* Change the text color on hover */
+}
+

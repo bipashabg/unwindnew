@@ -4,7 +4,7 @@ import React from 'react';
 const HomePage = () => {
   return (
     <div>
-      <h1>Heading</h1>
+      <h1>Welcome</h1>
       <div>
         <a href="https://cdn.htmlgames.com/ColoringMandalas/" target="_blank" rel="noopener noreferrer">
           <button style={buttonStyle1}>Play Game 1</button>

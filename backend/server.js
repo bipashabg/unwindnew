@@ -81,9 +81,42 @@ const verifyUser = (req, res, next) => {
   }
 };
 
+// userprofileVerify.js
+
+const userprofileVerify = (req, res, next) => {
+  const token = req.cookies.token;
+  console.log('Received token:', token);
+
+  if (!token) {
+    return res.json({ Error: "You are not authenticated" });
+  } else {
+    jwt.verify(token, "jwt-secret-key", (err, decoded) => {
+      if (err) {
+        console.error('Token verification error:', err);
+        return res.json({ Error: "Token is not valid" });
+      } else {
+        console.log('Token decoded successfully:', decoded);
+        req.Fullname = decoded.Fullname;
+        req.username = decoded.username;
+        next();
+      }
+    });
+  }
+};
+
+module.exports = userprofileVerify;
+
+
+//verifyrequest
 app.get('/', verifyUser, (req, res) => {
   return res.json({Status: "Success", Fullname: req.Fullname});
 })
+
+// For routes that need both Fullname and username (e.g., user profile)
+app.get('/userprofile', userprofileVerify, (req, res) => {
+  return res.json({ Status: "Success", Fullname: req.Fullname, username: req.username });
+});
+
 
 //Login endpoint
 
